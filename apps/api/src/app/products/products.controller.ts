@@ -6,33 +6,36 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
-} from '@nestjs/common';
-import { ProductsService } from './products.service';
+  UseGuards, Inject
+} from "@nestjs/common";
 import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { JwtAuthGuard } from '../modules/auth/guards/jwt-auth.guard';
 import { Product } from './entities/product.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { ClientProxy } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
+import { UpdateProductDto } from "./dto/update-product.dto";
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    @Inject('PRODUCT_MICROSERVICE') private readonly productsService: ClientProxy,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createProductDto: CreateProductDto): Promise<Product> {
-    return this.productsService.create(createProductDto);
+    return firstValueFrom(this.productsService.send('product_create', createProductDto));
   }
 
   @Get()
   findAll(): Promise<Product[]> {
-    return this.productsService.findAll();
+    return firstValueFrom(this.productsService.send('product_find_all', ''));
   }
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Product> {
-    return this.productsService.findOne(id);
+    return firstValueFrom(this.productsService.send('product_find_once', id));
   }
 
   @UseGuards(JwtAuthGuard)
@@ -41,12 +44,16 @@ export class ProductsController {
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
   ): Promise<UpdateResult> {
-    return this.productsService.update(id, updateProductDto);
+    const payload = {
+      id,
+      data: updateProductDto,
+    }
+    return firstValueFrom(this.productsService.send('product_update', JSON.stringify(payload)));
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<DeleteResult> {
-    return this.productsService.remove(id);
+    return firstValueFrom(this.productsService.send('product_delete', id));
   }
 }

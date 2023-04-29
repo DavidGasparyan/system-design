@@ -1,13 +1,32 @@
 import { Module } from '@nestjs/common';
-import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
+import { ClientsModule, Transport } from "@nestjs/microservices";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product])],
+  imports: [
+    TypeOrmModule.forFeature([Product]),
+    ClientsModule.registerAsync([
+      {
+        name: 'PRODUCT_MICROSERVICE',
+        imports: [ConfigModule],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [`${configService.get('RABBITMQ_HOST')}`],
+            queue: 'products_queue',
+            queueOptions: {
+              durable: false
+            },
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
+  ],
   controllers: [ProductsController],
-  providers: [ProductsService],
-  exports: [TypeOrmModule, ProductsService],
+  exports: [TypeOrmModule, ClientsModule],
 })
 export class ProductsModule {}

@@ -27,10 +27,17 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     volumes:
       - cache:/data
+  rabbitmq:
+    image: rabbitmq:3-management
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   api-1:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.api
     container_name: api-1
     restart: unless-stopped
     stdin_open: true
@@ -44,8 +51,22 @@ services:
   api-2:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.api
     container_name: api-2
+    restart: unless-stopped
+    stdin_open: true
+    env_file:
+      - ./.env.docker
+    tty: true
+    depends_on:
+      - db
+      - stripe-cli
+      - cache
+  products:
+    build:
+      context: .
+      dockerfile: Dockerfile.products
+    container_name: products
     restart: unless-stopped
     stdin_open: true
     env_file:
@@ -72,4 +93,6 @@ volumes:
   db:
     driver: local
   cache:
+    driver: local
+  rabbit_data:
     driver: local

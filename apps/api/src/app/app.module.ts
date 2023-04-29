@@ -8,23 +8,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import dbConfig from './common/config/db.config';
 import { OrdersModule } from './orders/orders.module';
 import { OrderDetailsModule } from './order-details/order-details.module';
-import { ClientsModule, Transport } from "@nestjs/microservices";
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'PRODUCT_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://localhost:5672'],
-          queue: 'products_queue',
-          queueOptions: {
-            durable: false
-          },
-        },
-      },
-    ]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [dbConfig],

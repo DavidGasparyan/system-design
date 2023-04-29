@@ -1,21 +1,24 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Customer } from '../customers/entities/customer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { Repository, UpdateResult } from 'typeorm';
-import { ProductsService } from '../products/products.service';
+
 import { Stripe } from 'stripe';
 import { StripeService } from '../modules/stripe/stripe.service';
 import { PaymentIntentEvent } from '../common/enums/payment-intent-event.enum';
 import { PaymentStatus } from '../common/enums/payment-status.enum';
+import { ClientProxy } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
+import { Product } from "../products/entities/product.entity";
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order)
     private readonly ordersRepository: Repository<Order>,
-    private readonly productsService: ProductsService,
+    @Inject('PRODUCT_MICROSERVICE') private readonly productsService: ClientProxy,
     private readonly stripeService: StripeService,
   ) {}
 
@@ -27,9 +30,10 @@ export class OrdersService {
       (item) => item.productId,
     );
 
-    const products = await this.productsService.checkIfProductsExist(
+    const products: Product[] = await firstValueFrom(this.productsService.send(
+      'product_check_exists',
       productIds,
-    );
+    ));
 
     if (!products || products.length != productIds.length) {
       throw new UnprocessableEntityException(
