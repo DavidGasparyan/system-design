@@ -21,9 +21,18 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     volumes:
       - cache:/data
+  rabbitmq:
+    image: rabbitmq:3-management
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
 volumes:
   db:
     driver: local
   cache:
+    driver: local
+  rabbit_data:
     driver: local
