@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
@@ -20,6 +21,7 @@
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.2.1",
+    "@nestjs/terminus": "^9.2.2",
     "@nestjs/typeorm": "^9.0.1",
     "@types/bcrypt": "^5.0.0",
     "@types/passport-jwt": "^3.0.8",
@@ -37,6 +39,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.9.0",
+    "prom-client": "^14.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "stripe": "^11.11.0",
@@ -85,4 +88,3 @@
     "typescript": "~4.9.5"
   }
 }
-

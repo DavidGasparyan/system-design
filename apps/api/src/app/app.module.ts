@@ -8,6 +8,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import dbConfig from './common/config/db.config';
 import { OrdersModule } from './orders/orders.module';
 import { OrderDetailsModule } from './order-details/order-details.module';
+import { HealthModule } from './health/health.module';
+import { PrometheusModule } from './prometheus/prometheus.module';
+import { MetricsModule } from './metrics/metrics.module';
+import { HttpModule } from "@nestjs/axios";
 
 @Module({
   imports: [
@@ -32,6 +36,10 @@ import { OrderDetailsModule } from './order-details/order-details.module';
     OrdersModule,
     OrderDetailsModule,
     AuthModule,
+    HealthModule,
+    PrometheusModule,
+    MetricsModule,
+    HttpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
