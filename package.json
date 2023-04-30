@@ -38,6 +38,7 @@
     "amqplib": "^0.10.3",
     "axios": "^1.0.0",
     "bcrypt": "^5.1.0",
+    "bootstrap": "^4.6.1",
     "cache-manager": "^5.1.6",
     "cache-manager-redis-store": "^3.0.1",
     "class-transformer": "^0.5.1",

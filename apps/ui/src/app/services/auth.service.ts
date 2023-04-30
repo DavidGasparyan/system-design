@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StorageService } from "./storage.service";
 
-const AUTH_API = 'http://localhost:3030/auth/';
+const AUTH_API = '/api/auth/';
 
 @Injectable({
   providedIn: 'root'
