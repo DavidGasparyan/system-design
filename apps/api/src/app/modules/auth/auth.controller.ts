@@ -44,7 +44,12 @@ export class AuthController {
       httpOnly: true,
       signed: true,
     });
-    return { msg: 'success' };
+
+    return {
+      name: customer.name,
+      email: customer.email,
+      phoneNumber: customer.phoneNumber,
+    };
   }
 
   @Get('refresh_token')
@@ -73,7 +78,11 @@ export class AuthController {
       httpOnly: true,
       signed: true,
     });
-    return { msg: 'success' };
+    return {
+      name: customer.name,
+      email: customer.email,
+      phoneNumber: customer.phoneNumber,
+    };
   }
 
   @Post('register')

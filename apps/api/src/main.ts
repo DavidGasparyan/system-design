@@ -23,6 +23,13 @@ async function bootstrap() {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   };
 
+  app.enableCors({
+    origin: ['http://localhost:4200'],
+    credentials: true,
+    optionsSuccessStatus: 200,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  });
+
   const document = SwaggerModule.createDocument(app, config, options);
   SwaggerModule.setup('api', app, document);
 
