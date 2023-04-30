@@ -22,7 +22,7 @@ export class NestjsHealthIndicator
     this.httpHealthIndicator = httpHealthIndicator;
     this.promClientService = promClientService;
     this.url = url || '';
-    // this.registerMetrics();
+    this.registerMetrics();
     this.registerGauges();
   }
 
